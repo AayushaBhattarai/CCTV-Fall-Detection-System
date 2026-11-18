@@ -108,8 +108,15 @@ class AlertManager:
 
         message = EmailMessage()
         message["Subject"] = "CCTV Fall Detection Alert"
-        message["From"] = settings["sender"] or username
-        message["To"] = settings["recipient"]
+        sender = os.getenv("SENDER_EMAIL", username)
+        recipient = os.getenv("RECIPIENT_EMAIL")
+
+        if not recipient:
+            print("[EMAIL] Recipient email missing.")
+            return
+
+        message["From"] = sender
+        message["To"] = recipient
 
         message.set_content(
             f"""
